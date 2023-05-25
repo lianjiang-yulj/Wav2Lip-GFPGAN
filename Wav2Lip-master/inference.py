@@ -246,6 +246,12 @@ def main():
 	batch_size = args.wav2lip_batch_size
 	gen = datagen(full_frames.copy(), mel_chunks)
 
+	unProcessedFramesFolderPath = "/home/ai/yulj/PycharmProjects/pythonProject/Wav2Lip-GFPGAN/after_frames"
+
+	if not os.path.exists(unProcessedFramesFolderPath):
+		os.makedirs(unProcessedFramesFolderPath)
+
+	frameNumber = 0
 	for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, 
 											total=int(np.ceil(float(len(mel_chunks))/batch_size)))):
 		if i == 0:
@@ -270,6 +276,9 @@ def main():
 
 			f[y1:y2, x1:x2] = p
 			out.write(f)
+
+			cv2.imwrite(path.join(unProcessedFramesFolderPath, str(frameNumber).zfill(4) + '.jpg'), f)
+			frameNumber += 1
 
 	out.release()
 
